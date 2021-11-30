@@ -1,0 +1,162 @@
+---
+title: "Using_Models_2"
+author: "Ethan Rutledge"
+date: "11/27/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1-sample t-test on the Gentoo penguin flipper lengths = 0
+```{r}
+require(palmerpenguins)
+
+t.test(subset(penguins, species == "Gentoo")$flipper_length_mm)
+
+```
+1-sample t-test on the Gentoo penguin flipper lengths = 218
+```{r}
+t.test(
+  x = subset(penguins, species == "Gentoo")$flipper_length_mm,
+  mu = 218
+)
+
+```
+one-tailed alternative hypothesis: Gentoo penguin flippers are smaller than 218 mm
+```{r}
+t.test(
+  x = subset(penguins, species == "Gentoo")$flipper_length_mm,
+  mu = 218,
+  alternative = "less"
+)
+
+```
+2 sample Ttest compare the flipper lengths of two species
+```{r}
+t.test(flipper_length_mm ~ species, data = subset(penguins, species != "Chinstrap"))
+
+```
+
+Look at the data
+
+```{r}
+par(mfrow = c(1, 2))
+hist(penguins$body_mass_g, breaks = 80, main = "histogram of body mass", xlab = "body mass (g)")
+plot(density(penguins$body_mass_g, na.rm = TRUE), main = "density plot of body mass")
+
+```
+Look at the data
+```{r}
+
+boxplot(body_mass_g ~ species, data = penguins)
+
+```
+look at the means
+```{r}
+
+dat_chinstrap = subset(penguins, species == "Chinstrap")
+mean(dat_chinstrap$body_mass_g, na.rm = TRUE)
+
+```
+test whether within-group data are normally-distributed:
+```{r}
+shapiro.test(dat_chinstrap$body_mass_g)
+
+```
+
+Here’s a cool shortcut for calculating the species mean body masses using aggregate() and the formula notation
+```{r}
+aggregate(body_mass_g ~ species, data = penguins, FUN = mean)
+
+```
+
+Same thing with the shapiro test
+
+```{r}
+aggregate(
+  body_mass_g ~ species,
+  data = penguins,
+  FUN = function(x) shapiro.test(x)$p.value)
+
+```
+
+Fit a linear model,Then we can look at the model coefficients:
+
+```{r}
+fit_species = lm(body_mass_g ~ species, data = penguins)
+summary(fit_species)
+
+```
+ANOVA
+```{r}
+anova(fit_species)
+
+```
+
+The syntax to build the model in R is easy. Use the lm() function to store the model in a variable: ANOVA complete walkthrough
+
+```{r}
+fit_species = lm(body_mass_g ~ species, data = penguins)
+
+summary(fit_species)
+
+anova(fit_species)
+
+```
+
+2 Way ANOVA, without interaction terms
+
+```{r}
+fit_additive = lm(body_mass_g ~ sex + species, data = penguins)
+
+```
+
+2 Way Anova, with interaction terms
+```{r}
+fit_interactive = lm(body_mass_g ~ sex * species, data = penguins)
+
+summary(fit_interactive)
+
+anova(fit_interactive)
+
+```
+
+Simple Linear Regression
+
+```{r}
+lm(bill_length_mm ~ body_mass_g, data = penguins)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

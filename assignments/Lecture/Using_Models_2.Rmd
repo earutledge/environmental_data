@@ -1,0 +1,97 @@
+---
+title: "Using_Models_2"
+author: "Ethan Rutledge"
+date: "11/27/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+require(palmerpenguins)
+
+```
+
+Q1 (4 pts.): Re-create the conditional boxplot of penguin body mass conditioned on sex and species.
+
+Q2 (2 pts.): Based on the boxplots, do you think male penguins (of any species) are significantly heavier than female penguins? Explain your reasoning.
+Yes, Gentoo males appear to be significantly heaver than Gentoo females. The error bars/confidence intervals do not overlap.
+
+Q3 (2 pts.): Do you think adding sex to a model that already includes species will improve the model fit?
+
+Make sure you justify your answer based on the boxplots and not results of a statistical test.
+
+I think it adds more evidence that there are differences in body mass between species, but we may arrive at that conclusion without sex.
+
+
+```{r}
+
+boxplot(body_mass_g ~ species * sex, data = penguins, las = 2,
+        ylab = "Body Mass (g)",
+        xlab = "",
+        main = "Penguin Boxplot of \nBody Mass by Species/Sex",
+        names = c("Adelie \nFemale", "Adelie \nMale", "Chinstrap \nFemale",
+"Chinstrap \nMale","Gentoo \nFemale", "Gentoo \nMale"))
+
+```
+
+Q4 (2 pts.): Show the R-code you used to build fit_both.
+
+Q5 (2 pts.): What is the base case for the two-way model that includes sex and species?
+sexfemale
+
+```{r}
+fit_both = lm(body_mass_g ~ sex * species, data = penguins)
+
+summary(fit_both)
+
+anova(fit_both)
+
+```
+
+
+Q6 (2 pts.): What are the names of the two coefficients (from the first column of the coefficient table) you need to calculate the average mass of female Chinstrap penguins?
+sexfemale and specieschinstrap
+
+Q7 (2 pts.): What is the predicted average mass of female Chinstrap penguins in the interactive model?
+3527.21
+
+Q8 (2 pts.): What is the observed average mass of female Chinstrap penguins, calcluated from the penguins data?
+3527.206
+
+```{r}
+aggregate(body_mass_g ~ species * sex, data = penguins, FUN = mean)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

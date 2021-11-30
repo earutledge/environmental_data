@@ -1,0 +1,49 @@
+---
+title: "Untitled"
+author: "Ethan Rutledge"
+date: "10/6/2021"
+output: pdf_document
+---
+
+
+1. In a short paragraph, describe a baseline scenario regarding seed predation. At the end, state the null hypothesis for seed predation.
+
+We are running an experiment to determine if Blue Jays have a preference between small seeds and big seeds.We placed a known, equal amount of each size at a bird feeder and waited an hour. We then went back and counted the amount of seeds left over from each size.
+The null hypothesis is that there is no difference between the amount of small seeds versus big seeds taken by Blue Jays.
+
+2. Paste the R code you used to complete the table and calculate the rates.
+
+```{r}
+rm(list = ls())
+  pol_n_predation = 26
+  pol_n_no_predation = 184
+  pol_n_total = 210
+  pol_predation_rate = 26/210
+  psd_n_predation = 25
+  psd_n_no_predation = 706
+  psd_n_total = 731
+  psd_predation_rate = 25/731
+  
+print(
+paste0(
+"The seed predation rate for Polyscias fulva is: ",
+round(pol_predation_rate, digits = 3)))
+
+print(
+paste0(
+"The seed predation rate for Pseudospondias microcarpa is: ",
+round(psd_predation_rate, digits = 3)))
+```
+
+3. Create a table (Worked with JT)
+```{r}
+seedtab = matrix(c("Polyscias fulva (pol)", "Pseudospondias microcarpa (psd)", 26, 25, 184, 706, 210, 731, 0.124, 0.034), ncol = 2, byrow = TRUE)
+colnames(seedtab) = c("", "")
+rownames(seedtab) = c("Species", "Any taken", "None taken", "N", "Predation rate")
+seedtab = as.table(seedtab)
+seedtab
+```
+
+4. Use the seed predation proportions you calculated to determine the ratios of seed proportions.
+
+Ratios of seed proportions 0.124/0.034= 3.647 pol to 1 psd

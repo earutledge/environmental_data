@@ -1,0 +1,182 @@
+---
+title: "Lab 7"
+author: "Ethan Rutledge"
+date: "10/27/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+Q1 (1 pt.): What is the sample size, n? Show the code you used for the calculation and remember to check for missing data.
+Q2 (1 pt.): What is the sample standard deviation? Show the code you used for the calculation.
+Q3 (2 pts.): What are the critical t-values? Show the R code you used for the calculation.
+Q4 (1 pt.): What is the sample standard error? Show the R code you used for the calculation.
+```{r}
+require(palmerpenguins)
+require(here)
+
+
+Gentoo = subset(penguins, penguins$species == "Gentoo")
+Gentoo_bill = subset(Gentoo, Gentoo$bill_length_mm !="NA")
+length(Gentoo_bill$bill_length_mm)
+
+Gentoo_mean = mean(Gentoo_bill$bill_length_mm)
+Gentoo_mean
+
+sd(Gentoo_bill$bill_length_mm)
+
+Gentoo_bill_crit_t = qt(0.05/2, 123)
+Gentoo_bill_crit_t
+
+Gentoo_bill_crit_t2 = qt(1 - 0.05/2, 123)
+Gentoo_bill_crit_t2
+
+sse_mean = function(x)
+    { na.x = is.na(x)
+      x2 =  x[!na.x]
+      sd.x2 = sd(x2)
+      n = length(x2)
+       sse = sd.x2/(sqrt(n))
+       return(sse)
+        }
+
+
+Gentoo_bill_SSE = sse_mean(Gentoo_bill$bill_length_mm)
+Gentoo_bill_SSE
+```
+
+Q5 (2 pts.): Finally, construct the CI and show the R code you used for the calculation.
+```{r}
+CI = c(Gentoo_mean + Gentoo_bill_SSE * Gentoo_bill_crit_t2, Gentoo_mean - Gentoo_bill_SSE * Gentoo_bill_crit_t2)
+
+CI
+
+# The confidence interval is 47.504 +- 0.550
+```
+
+Q6 (1 pt.): What is the CI?
+```{r}
+# The confidence interval is 47.504 +- 0.544
+
+CI_boot = c(47.504 + 0.544, 47.504 - 0.544)
+
+CI_boot
+
+```
+
+
+```{r}
+#install.packages("boot")
+require(boot)
+
+```
+
+
+Q7 (1 pt.): Show the r code you used to call the boot() function.
+```{r}
+boot_mean = function(x, i)
+{
+  return(mean(x[i], na.rm = TRUE))
+}
+
+Gentoo_boot = 
+  boot(
+    data = Gentoo_bill$bill_length_mm,
+    statistic = boot_mean,
+    R = 10000)
+print(Gentoo_boot)
+
+```
+
+Q8 (2 pts.): Show the r code you used to calculate the upper and lower 2.5% quantiles.
+```{r}
+quantile(
+  Gentoo_boot$t,
+  c(0.025, 0.975))
+
+```
+
+Q9 (5 pts.): Show your completed rarefaction_sampler() function.
+```{r}
+# This clears the current R session's environment
+rm(list = ls())
+
+# Re-read my data:
+moths = read.csv(here("data", "moths.csv"))
+
+rarefaction_sampler = function(input_dat, n_iterations)
+{
+  n_input_rows = nrow(input_dat)
+
+  results_out = matrix(
+    nrow = n_iterations,
+    ncol = n_input_rows)
+
+  # The outer loop: runs once for each bootstrap iteration.  index variable is i
+  for(i in 1:n_iterations)
+  {
+    # The inner loop: simulates increasing sampling intensity
+    # Sampling intensity ranges from 1 site to the complete count of
+    # sites in the input data (n)
+    for(j in 1:n_input_rows)
+    {
+      # sample the input data row indices, with replacement
+      rows_j = sample(n_input_rows, size = j, replace=TRUE)
+
+      # Creates a new data matrix
+      t1 = input_dat[rows_j, ]
+
+      # Calculates the column sums
+      t2 = apply(t1, 2, sum)
+
+      # Counts the number of columns in which any moths were observed
+      results_out[i, j] = sum(t2 > 0)
+    }
+  }
+  return(results_out)
+}
+
+```
+
+
+Q10 (1 pt.): What did you find most difficult about building the function?
+It was difficult to discern what each part of the code was doing. Specifically what each function carries out.
+
+
+Q11 (4 pts.): Show the code you used to perform the simulations and construct the curve.
+Q12 (4 pts.): Include your rarefaction curve plot in your report. Show the R-code you used to create your plot.
+```{r}
+# Re-read my data:
+moths = read.csv(here("data", "moths.csv"))
+rarefact = rarefaction_sampler(moths[,-1], 10000)
+
+rare_mean = apply(rarefact, 2, mean)
+rare_quant = apply(rarefact, 2, quantile, probs=c(0.025, 0.975))
+rare = t(rbind(rare_mean, rare_quant))
+
+# Plotting the curve
+matplot(
+  rare,
+  type='l',
+  xlab='Number of sampling plots',
+  ylab='Species richness',
+  main='Rarefaction Curve of the Species Richness per \nNumber of Sampling Plots',
+  col = c(1, 4, 6))
+
+legend(
+  'bottomright',
+  legend=c('Average Number of Species Present','2.5% Quantile','97.5% Quantile'),
+  lty=c(1,2,3),col = c(1, 4 ,6), inset=c(.1,.1))
+
+```
+
+
+
+Q13 (2 pts.): About how many sites should you visit if you want to see all of the moth species? Explain your reasoning using your rarefaction curve figure.
+
+30, because thats where species richness is highest and after 30 samples you  can use the central limit theorem and assume youre approaching the true number of species out there. Thats also where your mean, and CI's come together to the same species richness.

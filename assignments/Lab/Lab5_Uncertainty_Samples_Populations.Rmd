@@ -1,0 +1,200 @@
+---
+title: "Lab_5_Uncertainty, Samples, and Populations"
+author: "Ethan Rutledge"
+date: "10/13/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Q1. Show the R code you used to create exp_fun()
+
+Q2. In your lab report, include a single figure containing four negative exponential curves with these parameter values
+```{r}
+exp_fun = function(x, a, b){return(a * exp(-b * x))}
+
+curve(
+  exp_fun(x, 1.9, 0.9),
+  from = 0, to = 10, add = FALSE, 
+  main = "Ethan's Exponential Function",
+  ylab = "frequency of (x)", xlab = "x", lty = "solid", col = "black")
+
+curve(
+  exp_fun(x, 1.9, 0.3),
+  from = 0, to = 10, add = TRUE, 
+  main = "Ethan's Exponential Function",
+  ylab = "f(x)", xlab = "x", lty = "dotted", col = "black")
+
+curve(
+  exp_fun(x, 1.2, 0.2),
+  from = 0, to = 10, add = TRUE, 
+  main = "Ethan's Exponential Function",
+  ylab = "f(x)", xlab = "x", lty = "solid", col = "red")
+
+curve(
+  exp_fun(x, 1.2, 0.4),
+  from = 0, to = 10, add = TRUE, 
+  main = "Ethan's Exponential Function",
+  ylab = "f(x)", xlab = "x", lty = "dotted", col = "red")
+```
+Q3. Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter a.
+
+  The location where the line starts on the Y axis changes depending on the a value.
+
+Q4. Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter b.
+
+  The curve seems to be more deep and drastic with larger values of b.
+
+Q5. In your lab report, include a single plot containing 6 Ricker curves with these parameter values:
+```{r}
+ricker_fun = function(x, a, b) 
+{
+  return(a * x * exp(-b * x))
+}
+
+curve(
+  ricker_fun(x, 25, 0.1), 
+  from = 0, to = 100, add = FALSE, 
+  main = "Ethan's Ricker Function",
+  ylab = "frequency of (x)", xlab = "x", lty = "solid", col = "black")
+
+curve(
+  ricker_fun(x, 20, 0.2), 
+  from = 0, to = 100, add = TRUE, 
+  main = "Ethan's Ricker Function",
+  ylab = "f(x)", xlab = "x", lty = "dotted", col = "black")
+
+curve(
+  ricker_fun(x, 10, 0.2), 
+  from = 0, to = 100, add = TRUE, 
+  main = "Ethan's Ricker Function",
+  ylab = "f(x)", xlab = "x", lty = "dotted", col = "black")
+
+curve(
+  ricker_fun(x, 75, 0.3), 
+  from = 0, to = 100, add = TRUE, 
+  main = "Ethan's Ricker Function",
+  ylab = "f(x)", xlab = "x", lty = "solid", col = "red")
+
+curve(
+  ricker_fun(x, 50, 0.3), 
+  from = 0, to = 100, add = TRUE, 
+  main = "Ethan's Ricker Function",
+  ylab = "f(x)", xlab = "x", lty = "dotted", col = "red")
+
+curve(
+  ricker_fun(x, 40, 0.3), 
+  from = 0, to = 100, add = TRUE, 
+  main = "Ethan's Ricker Function",
+  ylab = "frequency of (x)", xlab = "x", lty = "dotted", col = "red")
+
+```
+Q6. Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter a
+
+  The height of the curve goes up or down with different values of a. Higher curve for higher values of a.
+
+Q7. Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter b
+
+  It's really hard to tell whats going on when you change the b variable. It seems to only have a lot of weight with varying a values.
+
+Q8. Linear Model. Provide the values of the slope, x1, and y1 parameters you chose. Briefly describe how you chose the values.
+
+  slope= -0.0005 x = 800 y = 0.2 I chose these values because they seemed to be where center of the data was. I chose the slope by trying different numbers until it matched the shape of the data.
+
+Q9. In your lab report, include a scatterplot of the salamander data with your fitted linear model.
+```{r}
+require(here)
+
+line_point_slope = function(x, x1, y1, slope)
+{
+  get_y_intercept = 
+    function(x1, y1, slope) 
+      return(-(x1 * slope) + y1)
+  
+  linear = 
+    function(x, yint, slope) 
+      return(yint + x * slope)
+  
+  return(linear(x, get_y_intercept(x1, y1, slope), slope))
+}
+
+sal_dispersal = data.frame(read.csv(here("data", "dispersal.csv")))
+
+plot(disp.rate.ftb ~ dist.class, data = sal_dispersal, 
+     main = "Linear Function of Salamander Dispersal", 
+     ylab = "Dispersal Rate of FTB", xlab = "Distance Class", pch = 10, col = "Black")
+
+curve(line_point_slope(x, 800, 0.2, -0.0005), add = T)
+
+```
+
+Q10 (2 pts): Exponential Model. Provide the values of the a and b. Briefly describe how you chose the values.
+
+  a = 1.5 and b = 0.003 I chose 1.5 for my a value because I wanted my line to cross the y axis around that area. I played around with the b value until it fit my data.
+
+Q11 (2 pts): In your lab report, include a scatterplot of the salamander data with your fitted exponential model.
+```{r}
+exp_fun = function(x, a, b){return(a * exp(-b * x))}
+
+plot(disp.rate.ftb ~ dist.class, data = sal_dispersal, pch = 20, col = "hotpink", 
+     main = "Exponential Function of Salamander Dispersal", 
+     ylab = "Dispersal Rate of FTB", xlab = "Distance Class") 
+
+curve(
+  exp_fun(x, 1.5, 0.003),
+  from = 0, to = 1500, add = TRUE, lty = "solid", col = "black")
+
+```
+
+Q12 (2 pts): Ricker Model Provide the values of the a and b. Briefly describe how you chose the values.
+
+  a = 0.01 b = 0.005 I don't fully understand these models, so I kept plugging in different values until it looked like it fit my data.
+
+Q13 (2 pts): In your lab report, include a scatterplot of the salamander data with your fitted ricker model.
+```{r}
+ricker_fun = function(x, a, b) 
+{
+  return(a * x * exp(-b * x))
+}
+
+plot(disp.rate.ftb ~ dist.class, data = sal_dispersal, pch = 20, col = "Blue", 
+     main = "Ricker Function of Salamander Dispersal", 
+     ylab = "Dispersal Rate of FTB", xlab = "Distance Class")
+
+curve(
+  ricker_fun(x, 0.01, 0.005), 
+  from = 0, to = 1500, add = TRUE, 
+  main = "Ethan's Ricker Function",
+  ylab = "frequency of (x)", xlab = "x", lty = "solid", col = "black")
+
+```
+
+Q14. Show the R code you used to create your data frame of model residuals.
+
+Q15. In your lab report, include histograms of the residuals for each of your three models. You may create a single figure with three panels, or include three separate figures.
+```{r echo=TRUE, fig.height=9, fig.width=7}
+sal_dispersal = data.frame(read.csv(here("data", "dispersal.csv")))
+
+sal_dispersal$y_predicted_linear = line_point_slope(sal_dispersal$dist.class, 800, 0.2, -0.0005)
+
+sal_dispersal$y_predicted_expo = exp_fun(sal_dispersal$dist.class, 1.5, 0.003)
+
+sal_dispersal$y_predicted_rick = ricker_fun(sal_dispersal$dist.class, 0.01, 0.005)
+
+
+dat_dispersal = data.frame(y_observed = sal_dispersal$disp.rate.ftb)
+
+
+dat_dispersal$lin_res = dat_dispersal$y_observed - sal_dispersal$y_predicted_linear
+dat_dispersal$expo_res = dat_dispersal$y_observed - sal_dispersal$y_predicted_expo
+dat_dispersal$rick_res = dat_dispersal$y_observed - sal_dispersal$y_predicted_rick
+
+par(mfrow = c(3, 1))
+hist(dat_dispersal$lin_res, main = "Linear Function Residuals", ylab = "Frequency", xlab = "Residuals")
+hist(dat_dispersal$expo_res, main = "Exponential Function Residuals", ylab = "Frequency", xlab = "Residuals")
+hist(dat_dispersal$rick_res, main = "Ricker Function Residuals", ylab = "Frequency", xlab = "Residuals")
+
+
+```

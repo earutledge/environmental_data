@@ -1,0 +1,43 @@
+---
+title: "Data Exploration Pt. 2"
+author: "Ethan Rutledge"
+date: "9/16/2021"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+First install the packages and data
+
+```{r}
+install.packages("palmerpenguins")
+
+install.packages("here")
+
+require(palmerpenguins)
+
+require(here)
+
+penguins = data.frame(penguins)
+
+```
+
+
+Here were biulding a linear model and a scatter plot and fixing a trendline to the plot.
+
+```{r}
+linear_model= lm(bill_length_mm ~ flipper_length_mm, data = penguins)
+
+plot(x = penguins$flipper_length_mm, y = penguins$bill_length_mm, 
+     xlab = "Flipper Length", 
+     ylab = "Bill Length", 
+     main = "Birds")
+
+abline(linear_model)
+
+```
+

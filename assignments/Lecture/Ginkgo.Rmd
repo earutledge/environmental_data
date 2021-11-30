@@ -1,0 +1,59 @@
+---
+title: "Ginkgo"
+author: "Ethan Rutledge"
+date: "11/23/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+require(here)
+ginkgo_all   = read.csv(here("data", "ginkgo_data_2021.csv"))
+
+```
+
+
+Q1 (1 pt.): Create a conditional boxplot of one of the continuous variables (notch) conditioned on the seeds_present column.
+
+
+```{r}
+dat_ginkgo   = read.csv(here("data", "ginkgo_data_2021.csv"))
+
+boxplot(max_width ~ seeds_present, data = dat_ginkgo, 
+        ylab = "Width (mm)",
+        xlab = "Seeds Present",
+        main = "Ginkgo Leaf Width by \nSeeds Present")
+
+```
+
+
+
+Q2 (1 pt.): Based on your boxplot, do you think there is any difference betwen seed bearing and non seed bearing trees? Note: this is just a prelimnary data exploration, you may change your mind based on further analysis!
+
+There doesnt appear to be much of a difference. However non seed bearing leaves cover a wider range of widths.
+
+Q3 (1 pt.): Create a scatterplot of max leaf depth (x) and max leaf width (y).
+
+```{r}
+plot(max_depth ~ max_width, data = dat_ginkgo,
+    ylab = "Width (mm)",
+    xlab = "Depth (mm)",
+    main = "Ginkgo Leaf Scatterplot")
+
+```
+
+
+Q4 (1 pt.): Qualitatively describe the patterns you see in the scatterplot.
+
+There appears to be a positive relationship betweeen leaf width and leaf depth.
+
+Q5 (1 pt.): Explain how our data collection procedure might have violated the fixed x assumption.
+
+Groups may have thought they were picking leaves from one tree, but may have picked leaves from two trees that were close together.
+
+Q6 (1 pt.): Name 1 or more concepts you’d like me to review or discuss in more detail during our last two class meetings.
+
+Functions and Formulas in lab. Go more in depth into modeling more than one predictor at a time.

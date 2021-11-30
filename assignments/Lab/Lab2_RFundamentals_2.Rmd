@@ -1,0 +1,94 @@
+---
+title: "Lab 02: R fundamentals 2"
+author: "Ethan Rutledge"
+date: "9/15/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+n = 12345
+vec_1 = sample(12, n, replace = TRUE)
+head(vec_1)
+
+vec_2 = vec_1==3
+
+vec_1[vec_2]
+```
+
+
+1. Show the R code you used to create vec_2. :::{.warn} Your code should be a complete and self-contained example. I should be able to paste your code into a fresh R session on my computer and re-create your vec_2 ::
+
+
+2. Give two reasons why determining which elements in vec_1 have value 3 by visual inspection is a bad idea?
+  
+  It would most likely result in error and would be time consuming.
+
+```{r}
+length(vec_1)
+sum(vec_1 == 3)
+
+n = 10
+vec_1 = sample(12, n, replace = TRUE)
+paste0("Sum of elements with value 3: ", sum(vec_1 == 3))
+```
+
+3. Why didn’t you always get the same count of 3 entries each time?
+
+  It is picking a random set of 10 variables between 1 and 12 and           giving you how many of those numbers are 3.So each time you run the       code it is randomized.
+
+4. Considering the different vectors generated each time, explain why using a logical test is a safe way to select entries with a value of 3?
+
+  It proivdes the best random sample, given a specific size of data.        Whereas a human may misrepresent the data by their choice.
+
+
+5. Explain why performing logical subsetting by hand is very very bad practice. You may want consider re-usability of code, working with different sized data sets, and sharing code with collaborators.
+
+  Using logical subsetting rather than by hand helps discourage human       error and is reproducible, thus can be standardized across                collaborators standardized.
+
+
+```{r}
+for (i in 1:10) {print(paste0("This is loop iteration:", i))}
+```
+
+
+6. Provide the code for your modified loop. It must run as a self-contained example on a fresh R session on my computer.
+
+
+```{r}
+n=5
+for (i in 1:n) {print(paste0("This is loop iteration:", i))}
+```
+
+7. Provide the code for the modified loop that executes n times. It needs to be a self contained example. I should be able to set the value of n and then run your loop on my computer.
+
+
+```{r}
+n=17
+vec_1=sample(1:10, n, replace = TRUE)
+
+
+for (i in 1:n)
+{print(paste0("The element of vec_1 at index", i , " is:" , vec_1[i]))}
+```
+
+8. Provide the code you used to create the n, vec_1, and the loop. As always, it should run as a stand-alone example in a fresh R session on my computer.
+  Worked with Sonja and JT
+
+
+```{r}
+create_and_print_vec = function(n, min = 1, max =10)
+  
+{vec_1=sample(min:max, n, replace = TRUE)
+
+
+for (i in 1:n)
+{print(paste0("The element of vec_1 at index", i , " is:" , vec_1[i]))}} 
+ 
+create_and_print_vec(10, min = 100, max = 2000)
+```
+
+9. Provide the code you used to build your function.

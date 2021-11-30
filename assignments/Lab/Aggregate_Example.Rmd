@@ -1,0 +1,48 @@
+---
+title: "Aggregate_Example"
+author: "Ethan Rutledge"
+date: "10/27/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+# Aggregate example for finding statistics
+
+require(palmerpenguins)
+
+aggregate(penguins$flipper_length_mm, 
+          list(penguins$species), 
+          FUN = mean, na.rm = TRUE)
+```
+
+```{r}
+# Aggregate example 2
+
+aggregate(flipper_length_mm ~ species, 
+          data = penguins, 
+          FUN = mean, na.rm = TRUE)
+
+```
+
+```{r}
+# Boxplot example with Aggregate
+
+boxplot(flipper_length_mm ~ species, data = penguins, FUN = mean, na.rm = TRUE)
+
+```
+
+```{r}
+# using additional paramters
+
+aggregate(flipper_length_mm ~ species + sex, 
+          data = penguins, 
+          FUN = mean, na.rm = TRUE)
+
+```
+
+

@@ -1,0 +1,208 @@
+---
+title: "Lab_4_Uncertainty_and_Error"
+author: "Ethan Rutledge"
+date: "9/29/2021"
+output: pdf_document
+---
+
+1.Show the code you used to create your vectors.
+
+```{r}
+norm_17 = rnorm(n = 17, mean = 10.4, sd = 2.4)
+norm_30 = rnorm(n = 30, mean = 10.4, sd = 2.4)
+norm_300 = rnorm(n = 300, mean = 10.4, sd = 2.4)
+norm_3000 = rnorm(n = 3000, mean = 10.4, sd = 2.4)
+```
+
+2.Include the R code you used to create your figure. Your answer should include code that builds the figure as well as saves it to a file.
+
+```{r echo=TRUE, height=1600, width=1500, res=180}
+
+require(here)
+png(filename = here("Images", "lab_04_hist_01.png"), width = 1500, height = 1600, 
+  res = 180)
+par(mfrow = c(2, 2))
+hist(norm_17, main = " Normal Distribution of Random Numbers \nUsing 17 Data Points", 
+     ylab = "Frequency", xlab = "Random 17 points with a mean \nof 10.4 and st. dev of 2.4")
+hist(norm_30, main = " Normal Distribution of Random Numbers \nUsing 30 Data Points", 
+     ylab = "Frequency", xlab = "Random 30 points with a mean \nof 10.4 and st. dev of 2.4")
+hist(norm_300, main = " Normal Distribution of Random Numbers \nUsing 300 Data Points", 
+     ylab = "Frequency", xlab = "Random 300 points with a mean \nof 10.4 and st. dev of 2.4")
+hist(norm_3000, main = " Normal Distribution of Random Numbers \nUsing 3000 Data Points", 
+     ylab = "Frequency", xlab = "Random 3000 points with a mean \nof 10.4 and st. dev of 2.4")
+
+dev.off()
+
+```
+
+3. Upload your lab_04_hist_01.png file to Moodle.
+
+4. Qualitatively describe the differences among the three histograms.
+
+  There are less bars and more sporadic behavior in the histograms with less data points. 
+  There is no clear pattern in the first two histograms.
+
+5. Explain why the shapes of the histograms are different.
+
+  As the histograms use more data points the shapes look closer to a normal 
+  distribution/bell shape. This is because with more data points you have a better 
+  chance of having more numbers that fall closer to the true mean.
+
+6. What are the parameters and their values for the standard Normal distribution?
+
+  They fall within -1 and 1, with a mean of 0 and a standard deviation of 1.
+  
+7. Include the R code you used to create your figure. Your answer should include 
+code that builds the figure as well as saves it to a file.
+
+```{r echo=TRUE, height=1200, width=1500, res=180}
+svg(filename = here("Images", "norm_1.svg"))
+
+x = seq(-20, 20, length.out = 1000)
+y = dnorm(x, mean = 10.4, sd=2.4)
+
+plot(x, y, main = "Normal Probability Density Function", type = "l", xlim = c(-20, 20),
+     ylab = "Fequency of X", 
+     xlab = "Random Numbers [-20~20] with mean = 10.4 \nand St.D = 2.4 using 1000 data points" )
+abline(h = 0)
+
+dev.off()
+```
+
+
+8. Upload figure to moodle.
+
+
+9. Show the R code you used to create one of the random datasets in your figure.
+
+
+```{r}
+
+png(filename = here("Images", "lab_04_plethira.png"))
+par(mfrow = c(2, 2))
+
+n_pts = 500
+x_min = 1
+x_max = 500
+x = runif(n = n_pts, min = x_min, max = x_max)
+
+dat = data.frame(x = x, y_observed = rnorm(n_pts))
+
+plot(y_observed ~ x, data = dat, pch = 20, col = "blue", main = "Random 100 Blue Points", 
+     ylab = "Normal Distribution of X Using 500 Data Points", 
+     xlab = "Random Points Between 1 and 500")
+
+
+n_pts_1 = 1000
+x_min_1 = 1
+x_max_1 = 1000
+x_1 = runif(n = n_pts_1, min = x_min_1, max = x_max_1)
+
+dat_1 = data.frame(x = x_1, y_observed_1 = rnorm(n_pts_1))
+
+plot(y_observed_1 ~ x_1, data = dat_1, pch = 20, col = "hotpink", 
+     main = "Random 1000 Hot Pink Points", 
+     ylab = "Normal Distribution of X Using 1000 Data Points", 
+     xlab = "Random Points Between 1 and 1000")
+
+
+norm_new = rnorm(n = 5000, mean = 2500, sd = 250)
+
+hist(norm_new, main = " Histogram of Random Numbers", col = "lawngreen", 
+     ylab = "Frequency", 
+     xlab = "Random 5000 Points with a mean = 2500 and st.dev = 250")
+
+boxplot(x_1, x, ylab = "Normal Random Number Distribtuion", col = "coral", 
+        main = " Boxplots of Two Random \nNumber Distributions")
+
+dev.off()
+
+```
+
+
+10. Upload an image file of your figure. It may be in png (raster graphics), svg 
+(vector graphics), or pdf format.
+
+
+11. Show the R code you used to create one of the random datasets in your figure.
+
+```{r echo=TRUE, height=1200, width=2000, res=180}
+
+png(filename = here("Images", "lab_04_Curves.png"))
+
+line_point_slope = function(x, x1, y1, slope)
+{
+  get_y_intercept = 
+    function(x1, y1, slope) 
+      return(-(x1 * slope) + y1)
+  
+  linear = 
+    function(x, yint, slope) 
+      return(yint + x * slope)
+  
+  return(linear(x, get_y_intercept(x1, y1, slope), slope))
+}
+
+
+
+n_pts_1 = 1000
+x_min_1 = 1
+x_max_1 = 500
+x_1 = runif(n = n_pts_1, min = x_min_1, max = x_max_1)
+
+dat_1 = data.frame(x = x_1, y_observed_1 = rnorm(n_pts_1))
+
+Ques_11_x = 250
+Ques_11_y = 0
+Ques_11_slope = 0.001
+
+plot(y_observed_1 ~ x_1, data = dat_1, pch = 20, col = "hotpink", 
+     main = "Random 1000 Hot Pink Points", 
+     ylab = "Random Distribution Using 1000 Data Points", 
+     xlab = "Random Numbers Between 1 and 500")
+curve(line_point_slope(x, Ques_11_x, Ques_11_y, Ques_11_slope), add = T)
+
+dev.off()
+
+```
+
+
+12. Upload the Image to moodle
+
+13/14. Paste the R code you used to create create the columns of predicted values 
+and residuals. Include images.
+
+```{r}
+n_pts_1 = 1000
+x_min_1 = 1
+x_max_1 = 500
+x_1 = runif(n = n_pts_1, min = x_min_1, max = x_max_1)
+
+dat_1 = data.frame(x = x_1, y_observed_1 = rnorm(n_pts_1))
+
+y_observed_1 = rnorm(n_pts_1)
+
+y_predicted = line_point_slope(dat_1$x, Ques_11_x, Ques_11_y, Ques_11_slope)
+
+resids = y_observed_1 - y_predicted
+
+Quess_13_df = data.frame(y_observed_1, y_predicted, resids)
+
+plot(resids ~ y_predicted, data = dat_1, pch = 20, col = "blue", 
+     main = "Residual Scatterplot", 
+     ylab = "Model Residuals", 
+     xlab = "Predicted Values")
+
+hist(resids, main = "Histogram of Model Residuals", ylab = "Frequency", 
+     xlab = "Model Residuals")
+
+```
+
+
+
+
+
+
+
+
+

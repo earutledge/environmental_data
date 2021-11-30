@@ -1,0 +1,35 @@
+---
+title: "R Markdown Documents - Part 1"
+author: "Ethan Rutledge"
+date: "9/8/2021"
+output:
+  html_document:
+    theme: united
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+subtitle: Analysis of Environmental Data
+---  
+# Introduction 
+  
+Hello, My name is **Ethan Rutledge** my major is *Environmental Conservation*. I'm originally from Iowa, but I just moved here from Oregon where I worked for USGS.
+
+---  
+
+# Concepts List
+1. RStudio
+2. Advanced modeling of fish populations
+3. Creating useful figures in R
+3. More R
+
+---
+
+# Course List
+* Fisheries Management
+* Ichthyology
+* Natural Resources Sampling and Statistics
+* Field Methodology
+
+---
+

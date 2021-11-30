@@ -1,0 +1,62 @@
+---
+title: "code chunk demo"
+author: "Ethan Rutledge"
+date: "10/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_penguin_data, echo=TRUE, eval=TRUE}
+
+require(palmerpenguins)
+head(penguins)
+
+```
+
+```{r simple pairplot, fig.width=4, fig.asp=.75/1.5}
+
+plot(penguins[, 3:5])
+
+```
+
+```{r simple pairplot 2, fig.width=4, fig.asp=3/1.5}
+
+plot(penguins[, 3:5])
+
+```
+
+```{r head view, eval=FALSE}
+
+##This is when you want to see the code but not the output
+head(penguins)
+```
+
+```{r head view 2, echo=FALSE}
+
+##This is when you want to see the output but not the code
+head(penguins)
+```
+
+# Tabset Example {.tabset}
+
+## Tab 1
+
+Tab 1 Contents 
+
+```{r histogram of flipper length, fig.asp = 1/1.5}
+
+hist(penguins$flipper_length_mm)
+
+```
+
+## Tab 2
+
+Tab 2 Contents
+
+## Tab 3
+
+Tab 3 Contents
+

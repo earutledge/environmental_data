@@ -1,0 +1,22 @@
+---
+title: "Function Practice"
+author: "Ethan Rutledge"
+date: "9/29/2021"
+output: pdf_document
+---
+
+```{r}
+require(palmerpenguins)
+
+require(here)
+
+png(filename = here("Images", "Call it whatever.png"))
+
+save_png_1=function(image_file){png(filename= here("Images","ugly_histo", height = 1000, width= 1000))}
+
+
+hist(penguins$flipper_length_mm)
+
+dev.off()
+```
+

@@ -1,0 +1,119 @@
+---
+title: "Lecture_Probability and Frequentist Concepts"
+author: "Ethan Rutledge"
+date: "10/21/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Q1 (2 pts.): What is the probability of observing a count of exactly 3 successes 
+in a binomial distribution with parameters n = 4 and p = 0.75?
+
+```{r}
+dbinom(3, 4, 0.75)
+
+```
+
+
+Q2 (2 pts.): What is the probability of observing a count of 3 successes or fewer in a binomial distribution with parameters n = 4 and p = 0.75?
+
+```{r}
+pbinom(3, 4, 0.75)
+
+```
+
+
+Q3 (2 pts.): What is the probability of observing more than 3 successes in a binomial distribution with parameters n = 5 and p = 0.75?
+
+```{r}
+1 - pbinom(3, 5, 0.75)
+
+```
+
+
+Q4 (2 pts.): - What is the probability of observing a value of less than 1.2 from a normally-distributed population with mean = 2 and standard deviation = 2?
+
+```{r}
+pnorm(1.2, mean = 2, sd = 2)
+
+```
+
+
+Q5 (2 pts.): - What is the probability of observing a value of greater than 1.2 from a normally-distributed population with mean = 2 and standard deviation = 2?
+
+```{r}
+1 - pnorm(1.2, mean = 2, sd = 2)
+
+```
+
+
+Q6 (4 pts.): - What is the probability of observing a value between 1.2 and 3.2 from a normally-distributed population with mean = 2 and standard deviation = 2?
+
+```{r}
+pnorm(3.2, mean = 2, sd = 2) - pnorm(1.2, mean = 2, sd = 2)
+
+```
+
+
+Q7 (2 pts.): Describe how the shape of the histogram changes as you continue to press the sample button.
+
+The more times you sample, the closer the shape of the histogram looks like the skewed distribution.
+
+Q8 (2 pts.): Describe how the shape of the histogram changes as you continue to press the sample button.
+
+The more times you sample, the closer the shape of the histogram looks like the skewed distribution. The 
+difference between the sample sizes results in less values falling on the outer edges of the distribution.
+
+Q9 (2 pts.): Describe how the shape of the histogram changes as you continue to press the sample button.
+
+The shape of the histogram looks closer to a normal distribution the bigger the ample size gets and more
+samples you do. More values falling closer to the center of the curve.
+
+Q10 (2 pts.): Why is there such a drastic change in the shape of the sampling distribution when you change the sample size from 1 to 2?
+
+You're essentially doubling the amount of data you're putting into you're model. The more samples you collect the closer to the true mean you will get.
+
+Q11 (2 pts.): What are the two main factors that determine the width of the sampling distribution of the mean?
+
+The amount of samples that are taken and the standard deviation.
+
+Q12 (2 pts.): How many 3-character words are possible?
+
+15,625
+
+Q13 (2 pts.): How many books would the Library contain if you added one additional position to the book size? Express your answer in terms of B.
+
+B= 25 ^ 1,328,400 or according to my calculator, infinity.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,290 @@
+---
+title: "Lab_6"
+author: "Ethan Rutledge"
+date: "10/20/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, eval=FALSE}
+require(palmerpenguins)
+require(here)
+```
+
+Q1. Show the R code you used to define your sse_mean() function. 
+```{r}
+rm(list = ls())
+
+sse_mean = function(x)
+    { na.x = is.na(x)
+      x2 =  x[!na.x]
+      sd.x2 = sd(x2)
+      n = length(x2)
+       sse = sd.x2/(sqrt(n))
+       return(sse)
+        }
+
+
+sse_mean(penguins$body_mass_g)
+sse_mean(mtcars$mpg)
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+dat_pen = subset(penguins, species != "Gentoo")
+boxplot(flipper_length_mm ~ species, data = dat_pen)
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+dat_pen = droplevels(subset(penguins, species != "Gentoo"))
+{
+  par(mfrow = c(1, 2))
+  boxplot(flipper_length_mm ~ species, data = penguins)
+  boxplot(flipper_length_mm ~ species, data = dat_pen)
+}
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+set.seed(123)
+
+flipper_shuffled = sample(penguins$flipper_length_mm, replace = TRUE)
+par(mfrow = c(1, 2))
+boxplot(flipper_length_mm ~ species, data = penguins)
+boxplot(flipper_shuffled ~ penguins$species, xlab = "species")
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+t.test(dat_pen$flipper_length_mm ~ dat_pen$species)
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+set.seed(1)
+flipper_shuffled = sample(dat_pen$flipper_length_mm)
+
+boxplot(flipper_shuffled ~ dat_pen$species)
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+t_test_1 = t.test(flipper_shuffled ~ dat_pen$species)
+t_test_1
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+t_test = t.test(dat_pen$flipper_length_mm ~ dat_pen$species)
+t_test
+
+t_test$estimate
+
+diff_observed = round(diff(t_test$estimate), digits = 3)
+print(diff_observed, digits = 3)
+```
+
+```{r, echo=FALSE, eval=FALSE}
+agg_means = aggregate(
+  flipper_length_mm ~ species, 
+  data = dat_pen, 
+  FUN = "mean", 
+  na.rm = TRUE)
+diff_observed = diff(agg_means[, 2])
+
+agg_means
+diff_observed
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+table(dat_pen$species)
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+n_1 = 68
+n_2 = 152
+
+dat_1 = sample(dat_pen$flipper_length_mm, n_1, replace = TRUE)
+dat_2 = sample(dat_pen$flipper_length_mm, n_2, replace = TRUE)
+
+diff_simulated = 
+  mean(dat_1, na.rm = TRUE) - mean(dat_2, na.rm = TRUE)
+
+print(c(observed = diff_observed, simulated = diff_simulated))
+
+```
+
+Q2. Include the code you used to define your two_group_resample() function into the text input
+```{r}
+dat_pen = droplevels(subset(penguins, species != "Gentoo"))
+
+x = dat_pen$flipper_length_mm
+n_1 = 68
+n_2 = 152
+
+
+two_group_resample = function(x, n_1, n_2) 
+  {
+  dat_1 = sample(x, n_1, replace = TRUE)
+  dat_2 = sample(x, n_2, replace = TRUE)
+  
+
+diff_simulated = 
+  mean(dat_1, na.rm = TRUE) - mean(dat_2, na.rm = TRUE)
+
+
+return(diff_simulated)
+}
+
+set.seed(54321)
+two_group_resample(dat_pen$flipper_length_mm, 68, 152)
+
+t_test_1 = t.test(dat_pen$flipper_length_mm ~ dat_pen$species)
+t_test_1
+
+```
+
+
+Q3. Does your function perform Monte Carlo or bootstrap resampling, i.e. does it simulate a null or an alternative hypothesis? You may want to review your answer after you complete the rest of the lab questions.
+
+Our function performs Bootstrapping because it doesn't break any association between flipper length and species label. Entire rows are kept unjumbled, this tests the alternative hypothesis. 
+
+
+Q4. Create histogram of the resampled differences of means
+```{r}
+
+dat_pen = droplevels(subset(penguins, species != "Gentoo"))
+
+
+x = dat_pen$flipper_length_mm
+n_1 = 68
+n_2 = 152
+
+
+two_group_resample = function(x, n_1, n_2) 
+  {
+  dat_1 = sample(x, n_1, replace = TRUE)
+  dat_2 = sample(x, n_2, replace = TRUE)
+  
+
+diff_simulated = 
+  mean(dat_1, na.rm = TRUE) - mean(dat_2, na.rm = TRUE)
+}
+
+n = 2000
+mean_differences = c()
+for (i in 1:n)
+{
+  mean_differences = c(
+    mean_differences,
+    two_group_resample(dat_pen$flipper_length_mm, 68, 152)
+  )
+}
+hist(mean_differences, main = "Resampled Differences in Means of Flipper Length \nBetween Adelie and Chinstrap Penguins", ylab = "Frequency" , xlab = "Adelie and \nChinstrap Flipper Lengths")
+
+```
+
+Q5 (6 pts.): How many of your resampled differences of means were greater than 5.8?
+Assume that we are doing a 2-sided test: we don’t care which species has longer flippers, we only want to know if they are different.
+Include the R code you used to check the number of differences greater than 5.8.
+```{r}
+sum(abs(mean_differences) >= 5.8)
+
+```
+
+Q6. Given a p value of less than 1 per 10 million, how many simulations do you think you would have to do to see a difference in mean flipper length equal to or greater than 5.8 mm?
+
+It could be 10 million times though the number could be a lot greater, or infinity.
+
+Q7. Include a boxplot of your chosen variable in your report.
+
+```{r}
+
+dat_pen = droplevels(subset(penguins, species != "Gentoo"))
+{
+  boxplot(body_mass_g ~ species, data = dat_pen, ylab = "Body Mass (g)", main = "Body Mass of Adelie and Chinstrap Penguins", xlab = "Species" )
+}
+```
+
+Q8. Report the group means and difference between the means.
+
+```{r}
+agg_means = aggregate(
+  body_mass_g ~ species, 
+  data = dat_pen, 
+  FUN = "mean", 
+  na.rm = TRUE)
+diff_crit = diff(agg_means[, 2])
+
+agg_means
+diff_crit
+
+t_test = t.test(dat_pen$body_mass_g ~ dat_pen$species)
+t_test
+
+```
+
+Q9. Interpret the p-value from the t-test output in plain, non-technical English that a non-statistician would understand.
+
+There is no difference between the body mass of Adelie penguins versus Chinstrap penguins.
+
+If Adelie and Gentoo penguins did not differ in body mass (i.e. the null hypothesis were true), and I repeatedly, and randomly, sampled individual Adelie and Chinstrap penguins from a population, I would expect to observe a difference in mean body mass of 32.4g or greater less than 1 in 1000 experiments.
+
+Q10. How many differences in means were greater than diff_crit?
+Remember to treat this as a 2-tailed test.
+
+```{r}
+n = 1000
+mean_differences2 = c()
+for (i in 1:n)
+{
+  mean_differences2 = c(
+    mean_differences2,
+    two_group_resample(dat_pen$body_mass_g, 68, 152)
+  )
+}
+  sum(abs(mean_differences2) >= diff_crit)
+````
+
+
+Q11. Include a histogram of your simulation results in your report. Make sure it has appropriate title and labels.
+```{r}
+
+dat_pen = droplevels(subset(penguins, species != "Gentoo"))
+
+x = dat_pen$body_mass_g
+n_1 = 68
+n_2 = 152
+
+
+two_group_resample = function(x, n_1, n_2) 
+  {
+  dat_1 = sample(x, n_1, replace = TRUE)
+  dat_2 = sample(x, n_2, replace = TRUE)
+  
+
+diff_simulated = 
+  mean(dat_1, na.rm = TRUE) - mean(dat_2, na.rm = TRUE)
+}
+
+n = 1000
+mean_differences = c()
+for (i in 1:n)
+{
+  mean_differences = c(
+    mean_differences,
+    two_group_resample(dat_pen$body_mass_g, 68, 152)
+  )
+}
+hist(mean_differences, main = "Resampled Differences in Body Mass \n between Adelie and Chinstrap Penguins", ylab = "Frequency", xlab = "Mean Differences" )
+
+```
+
+
+

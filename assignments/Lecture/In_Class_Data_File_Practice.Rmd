@@ -1,0 +1,46 @@
+---
+title: "In_Class_Data_File_Practice"
+author: "Ethan Rutledge"
+date: "9/21/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+read.csv(here("data", "catrate.csv"))
+read.csv(here("data", "delomys.csv"))
+read.csv(here("data", "rope.csv"))
+
+dat_catrate = data.frame(read.csv(here("data", "catrate.csv")))
+dat_delomys = data.frame(read.csv(here("data", "delomys.csv")))
+dat_rope = data.frame(read.csv(here("data", "rope.csv")))
+
+head(dat_catrate)
+head(dat_delomys)
+head(dat_rope)
+```
+
+
+```{r}
+plot(x = dat_delomys$body_mass, y = dat_delomys$body_length, 
+     xlab = "Body Mass", 
+     ylab = "Body Length", 
+     main = "Ethan")
+
+png(filename = here("Images", "Ethan.png"))
+
+plot(x = dat_delomys$body_mass, y = dat_delomys$body_length, 
+     xlab = "Body Mass", 
+     ylab = "Body Length", 
+     main = "Ethan")
+
+dev.off()
+
+
+
+```

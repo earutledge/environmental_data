@@ -1,0 +1,227 @@
+---
+title: "Data exploration and deterministic functions Lab"
+author: "Ethan Rutledge"
+date: "9/22/2021"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r}
+##install.packages("psych")
+require(psych)
+
+```
+
+```{r}
+##bring in data and create data frame
+require(here)
+##read.csv(here("data", "hab.sta.csv"))
+dat_habitat = data.frame(read.csv(here("data", "hab.sta.csv")))
+head(dat_habitat)
+
+##read.csv(here("data", "bird.sta.csv"))
+dat_bird = data.frame(read.csv(here("data", "bird.sta.csv")))
+head(dat_bird)
+```
+
+```{r, echo=TRUE, width=1600, height=1400}
+##merge 2 data sets with identical variables and change image output dimensions
+dat_all = merge(dat_habitat, dat_bird)
+plot(ba.tot ~ elev, data = dat_all)
+
+```
+
+```{r}
+##random sample of 100 variables to check out data
+sample(dat_all$CEWA, 100)
+```
+
+```{r}
+##create boolean vector of  all the times cedar wax wing was observed
+cewa_vec = (dat_bird$CEWA > 0)
+##change to numeric present absent data and plot it
+cewa_present_absent = as.numeric(cewa_vec > 0)
+plot(x = dat_all$elev, y = cewa_present_absent)
+```
+
+```{r}
+# Function to calculate the logistic parameter a given the slope and midpoint
+get_logistic_param_a = function(slope, midpoint)
+{
+  b = slope / 4
+  return (-midpoint * (slope / 4))
+}
+
+# Function to calculate the logistic parameter b given the slope
+get_logistic_param_b = function(slope)
+{
+  return (slope / 4)
+}
+
+
+# Calculate the value of the logistic function at x, given the parameters a and b.
+logistic = function(x, a, b)
+{
+  val = exp(a + b * x)
+  return(val / (1 + val))
+}
+
+# Calculate the value of the logistic function at x, given a slope and midpoint.
+logistic_midpoint_slope = function(x, midpoint, slope)
+{
+  b = get_logistic_param_b(slope)
+  a = get_logistic_param_a(slope, midpoint)
+  return(logistic(x, a, b))}
+```
+
+```{r}
+##plot a logistic curve. It looks like a good midpoint value could be 400. We can try a slope of 0.1 to start with
+plot(x = dat_all$elev, y = cewa_present_absent)
+curve(logistic_midpoint_slope(x, midpoint = 400, slope = 0.1), add = TRUE)
+```
+```{r}
+##try a negative slope
+plot(x = dat_all$elev, y = cewa_present_absent)
+curve(logistic_midpoint_slope(x, midpoint = 400, slope = -0.1), add = TRUE)
+
+```
+```{r}
+##try a shallower negative slope
+plot(x = dat_all$elev, y = cewa_present_absent)
+curve(logistic_midpoint_slope(x, midpoint = 400, slope = -0.05), add = TRUE)
+
+```
+```{r}
+## make it a pretty plot
+plot(x = dat_all$elev, y = cewa_present_absent, col = "blue", cex = 1, pch = 16)
+curve(logistic_midpoint_slope(x, midpoint = 400, slope = -0.05), add = TRUE)
+
+```
+Assignment:
+
+1. Use the pair plot function from psych to create a pair plot of the three terrain variables and basal area from the lecture questions.
+
+
+
+```{r}
+## create a pair plot using the 3 terrain variables and basal area, the [,c] refers to using a subset from the dat_all dataset from columns elev,slope,aspect, as opposed to [c,] which refers to all rows.
+pairs.panels(dat_all[,c("elev", "slope", "aspect", "ba.tot")])
+
+```
+2. Choose two bird species and create plots of presence/absence (on the y-axis) and basal area (on the x axes).
+
+3. Visually inspect the plots and fit logistic curves using the parameterization functions provided above.
+
+```{r}
+##create boolean vector of  all the times common yellow throat and dove was observed
+coye_vec = (dat_all$COYE > 0)
+##change to numeric present absent data
+coye_present_absent = as.numeric(coye_vec > 0)
+##plot it
+plot(x = dat_all$ba.tot, y = coye_present_absent, ylab = "Common Yellow Throat Presence/Absence", xlab = "Total Basal Area", main = "Presence of Common Yellow Throat by Total Basal Area")
+##fit logistic curve
+curve(logistic_midpoint_slope(x, midpoint = 100, slope = -0.5), add = TRUE)
+##at very low total basal area we find a few birds, but any thicker and theyre out.
+
+```
+
+```{r}
+amro_vec = (dat_all$AMRO > 0)
+amro_present_absent = as.numeric(amro_vec > 0)
+plot(x = dat_all$ba.tot, y = amro_present_absent)
+
+plot(x = dat_all$ba.tot, y = amro_present_absent, ylab = "American Robin Presence/Absence", xlab = "Total Basal Area")
+curve(logistic_midpoint_slope(x, midpoint = 100, slope = -0.5), add = TRUE)
+##we see the presence of robins matches the absence of them up to 100m per ha, looks like a 50% chance of seeing them up to that point.
+
+```
+Questions:
+
+1. What is basal area, and how is it measured?
+Basal area is the amount of area covered by tree trunks. It is measured using a prism and dbh. It's units is m^2 per hectare.
+
+2. Include a figure of your terrain/basal area pairplots
+```{r}
+dat_all = merge(dat_habitat, dat_bird)
+pairs.panels(dat_all[,c("elev", "slope", "aspect", "ba.tot")])
+```
+
+3. Include a figure of your logistic function plot. Your figure must include the name of the bird species, appropriate title, axes, etc.
+```{r}
+coye_vec = (dat_all$COYE > 0)
+coye_present_absent = as.numeric(coye_vec > 0)
+plot(x = dat_all$ba.tot, y = coye_present_absent, ylab = "Common Yellow Throat Presence/Absence", xlab = "Total Basal Area", main = "Presence of Common Yellow Throat by Total Basal Area")
+curve(logistic_midpoint_slope(x, midpoint = 25, slope = -0.5), add = TRUE)
+```
+
+4. Qualitatively describe the bird’s presence/absence patterns in terms of basal area.
+Your answer should make reference to your fitted logistic model.
+Does the bird species seem to prefer areas with high or low tree cover?
+Does a logistic model seem like a good fit?
+
+At very low total basal area we find a few birds, probably 1-10 m^2 per ha but any thicker forested areas and they're out. The logistic curve drops off quickly after the few detections, however it still captures a lot of the absences, so it may not be a good fit. I may have done it wrong or am interpreting it wrong.There were very little observations of Yellow Throat in this study so its hard to fit a curve either way.
+
+5. Include a figure of your logistic function plot. Your figure must include the name of the bird species, appropriate title, axes, etc.
+```{r}
+amro_vec = (dat_all$AMRO > 0)
+amro_present_absent = as.numeric(amro_vec > 0)
+plot(x = dat_all$ba.tot, y = amro_present_absent, ylab = "American Robin Presence/Absence", xlab = "Total Basal Area", main = "American Robin Presence by Total Basal Area")
+curve(logistic_midpoint_slope(x, midpoint = 100, slope = -0.5), add = TRUE)
+
+```
+
+6. Qualitatively describe the bird’s presence/absence patterns in terms of basal area.
+Your answer should make reference to your fitted logistic model.
+Does the bird species seem to prefer areas with high or low tree cover?
+Does a logistic model seem like a good fit?
+
+We see the presence of robins matches the absence of them up to 100m per ha, looks like a 50% chance of seeing them up to that point. This makes sense with how common robins are.The logistic curve makes sense, there is a high probability of seeing robins up to 100 m^2 per ha then it drops off rapidly.
+
+7 and 8. How many total number of Gray Jays were observed in all of the sampling sites.
+Try using the dat_all data frame to calculate the answer. Include the R code you used to perform the calculation.
+```{r}
+sum(dat_all$GRJA)
+```
+9 and 10. Calculate the total number of sampling sites in which Gray Jays were observed.
+Hint: What happens when you use the sum() function on a vector of Boolean values?
+
+```{r}
+grja_vec = (dat_all$GRJA > 0)
+grja_present_absent = as.numeric(grja_vec > 0)
+sum(grja_present_absent)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

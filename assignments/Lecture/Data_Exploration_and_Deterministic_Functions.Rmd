@@ -1,0 +1,119 @@
+---
+title: "Data exploration and deterministic functions"
+author: "Ethan Rutledge"
+date: "9/16/2021"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+1. Create histograms for the three terrain variables: elevation, slope, and aspect. Plot all three histograms in one figure and include it in your report.
+
+```{r}
+library(here)
+##read.csv(here("data", "hab.sta.csv"))
+file.exists(here("data", "hab.sta.csv"))
+dat_habitat = data.frame(read.csv(here("data", "hab.sta.csv")))
+
+```
+
+
+```{r, echo=TRUE, width=20, height=20}
+par(mfrow = c(1, 3))
+hist(dat_habitat$elev, xlab = "Meters", main = "Elevation")
+hist(dat_habitat$slope, xlab= "Percent", main = "Slope")
+hist(dat_habitat$aspect, xlab= "Degrees", main = "Aspect", breaks = 16)
+
+```
+
+
+2. Interpret the shape of the elevation histogram in non-technical language that a non-scientist audience would understand.
+  The elevation graph depicts the number of sampling sites used when looking at an        elevation between 85 and 872 meters above sea level.The tallest bars clustered in the        middle of the graph tell us that they took most of their samples at mid latitudes between   300 and 500 meters. 
+
+
+3. What are the units of slope in this data set?
+  The units of slope are in % from 0-110. 
+
+
+4. Interpret the shape of the slope histogram in non-technical language that a non-scientist audience would understand
+  The slope graph depicts the number of samples taken at slopes from 0 to 110%. The shape of the graph tells us that they took most of their samples at moderate slopes between 40 and 70%. This means that they were sampling mostly where it is moderately steep, but not too steep.
+
+5. Briefly define aspect, describing the units used in this dataset.
+  Aspect is the compass direction that a particular feature is facing. It is measured in    degrees from 0-360.
+
+
+6. Interpret the shape of the aspect histogram in non-technical language that a non-scientist audience would understand
+  The aspect graph depicts the number of samples taken from every cardinal direction. The shape of the graph tells us that their samples had an even distribution of from 0-360 degrees. They took even samples from North/south/East/West etc. facing areas.
+
+
+7. Create scatterplots of total basal area and each of the the terrain variables: elevation, slope, and aspect. Basal area should be on the y-axis. Visually inspect the plots and fit a linear function to each terrain variable.
+
+```{r}
+linear_model_el= lm(dat_habitat$ba.tot ~ dat_habitat$elev, data = dat_habitat)
+
+plot(x = dat_habitat$elev, y = dat_habitat$ba.tot, 
+     xlab = "Elevation", 
+     ylab = "Total Basal Area", 
+     main = "Basal Area by Terrain Feature")
+
+abline(linear_model_el)
+
+```
+
+```{r}
+
+linear_model_sl= lm(dat_habitat$ba.tot ~ dat_habitat$slope, data = dat_habitat)
+
+plot(x = dat_habitat$slope, y = dat_habitat$ba.tot, 
+     xlab = "Slope", 
+     ylab = "Total Basal Area", 
+     main = "Basal Area by Terrain Feature")
+
+abline(linear_model_sl)
+```
+
+```{r}
+linear_model_as= lm(dat_habitat$ba.tot ~ dat_habitat$aspect, data = dat_habitat)
+
+plot(x = dat_habitat$aspect, y = dat_habitat$ba.tot, 
+     xlab = "Aspect", 
+     ylab = "Total Basal Area", 
+     main = "Basal Area by Terrain Feature")
+
+abline(linear_model_as)
+
+```
+
+```{r}
+
+par(mfrow = c(2, 3))
+  linear_model_el= lm(dat_habitat$ba.tot ~ dat_habitat$elev, data = dat_habitat)
+  plot(x = dat_habitat$elev, y = dat_habitat$ba.tot, 
+     xlab = "Elevation", 
+     ylab = "Total Basal Area", 
+     main = "Basal Area by Terrain Feature")
+    abline(linear_model_el)
+    
+  linear_model_sl= lm(dat_habitat$ba.tot ~ dat_habitat$slope, data = dat_habitat)
+  plot(x = dat_habitat$slope, y = dat_habitat$ba.tot, 
+     xlab = "Slope", 
+     ylab = "Total Basal Area", 
+     main = "Basal Area by Terrain Feature")
+    abline(linear_model_sl)
+    
+  linear_model_as= lm(dat_habitat$ba.tot ~ dat_habitat$aspect, data = dat_habitat)
+  plot(x = dat_habitat$aspect, y = dat_habitat$ba.tot, 
+     xlab = "Aspect", 
+     ylab = "Total Basal Area", 
+     main = "Basal Area by Terrain Feature")
+    abline(linear_model_as)
+    
+    hist(dat_habitat$elev, xlab = "Meters", main = "Elevation")
+    hist(dat_habitat$slope, xlab= "Percent", main = "Slope")
+    hist(dat_habitat$aspect, xlab= "Degrees", main = "Aspect")
+```
+
+
+8. For each terrain variable (elevation, slope, aspect), describe the relationship you observe and your model fit.
+  Elevation doesn't visually appear to have a strong relationship with total basal area. The R^2 value is 19.96 so this model is not a good fit. The same goes for slope and aspect (20.82 and 19.79 ,respectively)
+  None of the terrain features have any noticeable association with total basal area. This may be because a lack of samples for the far ends of slope and elevation, but doesn't explain why there is no relationship for aspect. This could mean that aspect doesn't drive total basal area, however I would argue that north facing aspects in the northern hemisphere tend to have more vegetation and south facing aspects having less due to drying out from the sun. Depending on elevation and a myriad of other variables. There also may be a low correlation between aspect and total basal area, but we do see some clustering around every 100 degrees (0, 150,250,350) or so. So there might be something to that. 
