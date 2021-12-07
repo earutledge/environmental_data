@@ -1,0 +1,48 @@
+---
+title: "Untitled"
+author: "Ethan Rutledge"
+date: "12/7/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+bkt = read.csv(here("data", "Brook_Trout_Hg.csv"))
+
+
+plot(Hg ~ Growth_Rate, data = bkt)
+boxplot(Hg ~ Temperature, data = bkt)
+
+
+fit_temp = lm(Hg ~ Temperature, data=bkt)
+  anova(fit_temp)
+  
+  
+fit_growth = lm(Hg ~ Growth_Rate, data=bkt)
+  anova(fit_growth)
+
+  
+fit_both = lm(formula = Hg ~ Growth_Rate * Temperature, data = bkt)
+    anova(fit_both)
+    
+    
+fit_cort = lm(formula = Hg ~ cort, data = bkt)
+    anova(fit_cort)
+
+fit_hsp = lm(formula = Hg ~ hsp, data = bkt)
+    anova(fit_hsp)
+    
+    
+fit_atp = lm(formula = Hg ~ atp, data = bkt)
+    anova(fit_atp)
+    
+    
+fit_hct = lm(formula = Hg ~ hct, data = bkt)
+    anova(fit_hct)
+    
+```
+

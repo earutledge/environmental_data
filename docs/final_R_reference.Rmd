@@ -1,0 +1,161 @@
+---
+title: "Final Project R Reference"
+author: "Ethan Rutledge"
+date: "12/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# R Reference Guide {.tabset .tabset-pills}
+
+
+## Loading Data and Packages
+
+
+Show how to load the (here) and (palmerpenguins) packages - library() and require()
+
+Use the 2021 ginkgo data to create a data.frame called ginkgo.
+
+
+```{r}
+
+##bring in data
+require(here)
+
+##library does the same thing but takes longer
+library(palmerpenguins)
+
+## create data frame
+gingko = data.frame(read.csv(here("data", "ginkgo_data_2021.csv")))
+
+## preview data
+head(gingko)
+
+
+```
+
+
+
+## Data Structures
+
+
+### c()
+
+
+The function c() combines or concatenates its arguments into a vector (a 1-dimensional data structure consisting of 1 or more elements).
+
+* All of the elements must be of the same type.
+    * I can’t combine character and numeric types in the same call to c()
+
+Here’s two examples using numeric and character data types:
+
+
+```{r}
+
+## Create a vector of numbers:
+num_vec  = c(1, 4, 8, 9, 13)
+
+## Create a vector of characters:
+char_vec = c("a", "fish", "data is cool")
+
+## I can show the contents of a vector by typing the name of the vector, or using the print() function.
+
+## Typing the name of the vector into the console prints the contents
+num_vec
+
+## The print() function accomplishes the same task:
+print(char_vec)
+
+```
+
+
+### length
+
+
+The function length() function gets or sets the length of a vector (list) or other objects. ... length() function can be used for all R objects. For an environment it returns the object number in it.
+
+Returns the number of characters in a string.
+
+
+```{r}
+
+
+```
+
+
+
+## Subsetting
+
+
+## Numerical Data Exploration
+
+
+## Graphical Data Exploration
+
+
+## Distribution Functions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
