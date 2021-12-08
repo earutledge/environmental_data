@@ -11,3 +11,5 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 Welcome to Ethan's homepage!
+
+[Final Project: R Reference Guide](final_R_reference.html)
