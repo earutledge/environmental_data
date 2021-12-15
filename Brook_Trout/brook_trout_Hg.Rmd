@@ -1,48 +1,103 @@
 ---
-title: "Untitled"
+title: "Brook Trout Hg"
 author: "Ethan Rutledge"
-date: "12/7/2021"
-output: pdf_document
+date: "12/13/2021"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+### Summary
 
+Juvenile brook trout were raised at varying temperatures for 24 days in a lab. 
+At the end of the 24 days a series of physiological and physical measurements
+we're taken from each fish. My goal was to go back and analyze these fish for mercury (Hg)
+accumulation as a response to some of these physiological measurements to try and determine 
+if any had predictive values. My main hypothesis however, was that higher growth rates 
+will result in lower concentrations of Hg in brook trout. This phenomenon is
+known as somatic growth dilution.
+
+
+### Definitions:
+
+Hg - mercury  
+
+temp - temperature  
+
+growth - growth rate (g/day)  
+
+cort - plasma cortisol (ng/ml)  
+
+hsp - hepatosomatic Index  
+
+atp - gill Na+/K+-ATPase  
+
+hct - hematocrit  
+
+end_weight - weight at end of 24 day trial  
+
+
+
+```{r}
+require(here)
+require(psych)
 bkt = read.csv(here("data", "Brook_Trout_Hg.csv"))
 
+plot(Hg ~ growth, data = bkt, main = "Hg Concentration vs Growth Rate", ylab = "Hg (ng/g)", xlab = "Growth (g/day)")
+plot(Hg ~ end_weight, data = bkt, main = "Hg Concentration vs Final Weight", ylab = "Hg (ng/g)", xlab = "Weight (g)")
+boxplot(Hg ~ temp, data = bkt, main = "Hg Concentration vs Temperature", ylab = "Hg (ng/g)", xlab = "Temperature (c)")
 
-plot(Hg ~ Growth_Rate, data = bkt)
-boxplot(Hg ~ Temperature, data = bkt)
-
-
-fit_temp = lm(Hg ~ Temperature, data=bkt)
-  anova(fit_temp)
+fit_temp = lm(Hg ~ temp, data=bkt)
+    anova(fit_temp)
   
+fit_growth = lm(Hg ~ growth, data=bkt)
+    anova(fit_growth)
   
-fit_growth = lm(Hg ~ Growth_Rate, data=bkt)
-  anova(fit_growth)
-
-  
-fit_both = lm(formula = Hg ~ Growth_Rate * Temperature, data = bkt)
+fit_both = lm(formula = Hg ~ growth * temp, data = bkt)
     anova(fit_both)
-    
     
 fit_cort = lm(formula = Hg ~ cort, data = bkt)
     anova(fit_cort)
-
+    
 fit_hsp = lm(formula = Hg ~ hsp, data = bkt)
     anova(fit_hsp)
-    
     
 fit_atp = lm(formula = Hg ~ atp, data = bkt)
     anova(fit_atp)
     
-    
 fit_hct = lm(formula = Hg ~ hct, data = bkt)
     anova(fit_hct)
     
+fit_weight = lm(formula = Hg ~ end_weight, data = bkt)
+    anova(fit_weight)
+    
+AIC(fit_temp, fit_growth, fit_both, fit_cort, fit_hsp, fit_atp, fit_hct, fit_weight)
+
+AIC(fit_both, fit_growth, fit_temp)
+
+plot(growth ~ temp, data = bkt)
+
+pairs.panels(bkt[,c("growth", "temp", "Hg")])
+
 ```
 
+
+### Conclusions
+
+Based on the ANOVA tables, each of the variables measured are strong predictors of mercury accumulation.
+I suspect that either temperature or growth are working in the background driving those measurements to
+be significant.
+
+In the mean time I ran an interactive model with temperature and growth (the two way ANOVA), in the 
+output table growth is still a significant predictor of Hg, temperature is no longer a significant
+predictor and the interaction between the two is also significant. To me this means that growth and temp are correlated, 
+but growth rather than temperature is driving the bus.
+
+I also ran AIC on all of the linear models. Cortisol, HCT and HSP had the best scores.
+The three models that followed were; growth~temp, growth, and temperature. I'm a little unsure 
+on how to interpret these results. I ran AIC on growth~temp, growth, and temp and the lowest AIC was growth~temp.
